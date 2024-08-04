@@ -5,11 +5,11 @@
 DEFAULT_STATUS = "😴 No active media"
 
 local function check_is_nowplaying_cli_installed()
-    if vim.fn.executable('nowplaying-cli') == 0 then
-        return false
-    end
+  if vim.fn.executable("nowplaying-cli") == 0 then
+    return false
+  end
 
-    return true
+  return true
 end
 
 local function get_now_playing()
@@ -17,8 +17,12 @@ local function get_now_playing()
     return "🔇 nowplaying-cli is not installed"
   end
 
-  local artist = vim.fn.system("nowplaying-cli get-raw | rg -oP '(?<=kMRMediaRemoteNowPlayingInfoArtist = )[^\n]+' | sed 's/;$//' | sed 's/^\"//;s/\"$//'")
-  local title = vim.fn.system("nowplaying-cli get-raw | rg -oP '(?<=kMRMediaRemoteNowPlayingInfoTitle = )[^\n]+' | sed 's/;$//' | sed 's/^\"//;s/\"$//'")
+  local artist = vim.fn.system(
+    "nowplaying-cli get-raw | rg -oP '(?<=kMRMediaRemoteNowPlayingInfoArtist = )[^\n]+' | sed 's/;$//' | sed 's/^\"//;s/\"$//'"
+  )
+  local title = vim.fn.system(
+    "nowplaying-cli get-raw | rg -oP '(?<=kMRMediaRemoteNowPlayingInfoTitle = )[^\n]+' | sed 's/;$//' | sed 's/^\"//;s/\"$//'"
+  )
 
   if artist == "" and title == "" then
     return DEFAULT_STATUS
@@ -28,7 +32,7 @@ local function get_now_playing()
     return "🎧 " .. vim.trim(title)
   end
 
-  return "🎧 " .. vim.trim(title)  .. " - " .. vim.trim(artist)
+  return "🎧 " .. vim.trim(title) .. " - " .. vim.trim(artist)
 end
 
 local function play()
@@ -95,9 +99,13 @@ function M.status_poll()
   -- STATUS_LINE = get_now_playing() or DEFAULT_STATUS
 
   local timer = vim.loop.new_timer()
-  timer:start(1000, 10000, vim.schedule_wrap(function ()
-    STATUS_LINE = get_now_playing() or DEFAULT_STATUS
-  end))
+  timer:start(
+    1000,
+    10000,
+    vim.schedule_wrap(function()
+      STATUS_LINE = get_now_playing() or DEFAULT_STATUS
+    end)
+  )
 end
 
 -- Return cached status line.
