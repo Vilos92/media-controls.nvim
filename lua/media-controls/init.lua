@@ -32,9 +32,19 @@ function M.status_cache()
 end
 
 --Retrieve the current media status using `nowplaying-cli`.
-function M.status_fetch()
+function M.status_print()
   STATUS_LINE = nowplaying_cli.get_now_playing() or media_status.STATUS_NO_MEDIA
   print(STATUS_LINE)
+end
+
+function M.elapsed_percentage_print()
+  local elapsed_percentage = nowplaying_cli.get_elapsed_percentage()
+  if elapsed_percentage == nil then
+    print("󰏰 unavailable")
+    return
+  end
+
+  print(elapsed_percentage .. "󰏰")
 end
 
 function M.play()

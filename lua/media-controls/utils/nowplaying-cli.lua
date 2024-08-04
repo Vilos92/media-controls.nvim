@@ -29,6 +29,25 @@ function M.get_now_playing()
   return "󰋋 " .. vim.trim(title) .. " - " .. vim.trim(artist)
 end
 
+function M.get_elapsed_percentage()
+  if not check_is_nowplaying_cli_installed() then
+    return media_status.STATUS_NOT_INSTALLED
+  end
+
+  local elapsedTime = vim.fn.system("nowplaying-cli get elapsedTime")
+  local duration = vim.fn.system("nowplaying-cli get duration")
+
+  elapsedTime = tonumber(elapsedTime)
+  duration = tonumber(duration)
+
+  local percentage = math.floor((elapsedTime / duration) * 100)
+  if percentage > 100 then
+    return nil
+  end
+
+  return percentage
+end
+
 function M.play()
   if not check_is_nowplaying_cli_installed() then
     return media_status.STATUS_NOT_INSTALLED

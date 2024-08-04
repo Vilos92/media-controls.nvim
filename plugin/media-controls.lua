@@ -7,7 +7,10 @@ if _G.loaded_music_controls then
 end
 
 vim.api.nvim_create_user_command("MediaControlStatus", function()
-  require("media-controls").status()
+  require("media-controls").status_print()
+end, {})
+vim.api.nvim_create_user_command("MediaControlElapsedPct", function()
+  require("media-controls").elapsed_percentage_print()
 end, {})
 vim.api.nvim_create_user_command("MediaControlPlay", function()
   require("media-controls").play()
