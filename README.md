@@ -16,6 +16,9 @@ This plugin requires [nowplaying-cli](https://github.com/kirtan-shah/nowplaying-
 brew install nowplaying-cli
 ```
 
+Additionally, a patched font is required. We have tested it with [Nerd Fonts](https://www.nerdfonts.com/). Please ensure you have a patched font installed and set as your terminal or Neovim GUI font for the best experience.
+
+
 ## Installation
 
 <details>
