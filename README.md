@@ -29,15 +29,19 @@ Additionally, a patched font is required. We have tested it with [Nerd Fonts](ht
     ```
 </details>
 
+## Queries
+
+- `MediaControlStatus` - Get the current status of the media player.
+  - Attempts to return the track and artist by default.
+- `MediaControlElapsedPct` - Get the elapsed percentage of the current track.
+
 ## Commands
 
-- `MCStatus` - Get the current status of the media player.
-  - Attempts to return the track and artist by default.
-- `MCPlay` - Start playback.
-- `MCPause` - Pause playback.
-- `MCToggle` - Toggle playback.
-- `MCNext` - Skip to the next track.
-- `MCPrevious` - Skip to the previous track.
+- `MediaControlPlay` - Start playback.
+- `MediaControlPause` - Pause playback.
+- `MediaControlToggle` - Toggle playback.
+- `MediaControlNext` - Skip to the next track.
+- `MediaControlPrevious` - Skip to the previous track.
 
 ## Listening to status
 
