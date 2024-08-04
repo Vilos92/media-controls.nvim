@@ -81,5 +81,5 @@ You can listen to the status of the media player for use in other plugins such a
 
 <!-- MARKDOWN LINKS & IMAGES -->
 
-[license-shield]: https://img.shields.io/github/license/Vilos92/typerion.svg?style=for-the-badge
-[license-url]: https://github.com/Vilos92/typerion/blob/master/LICENSE
+[license-shield]: https://img.shields.io/github/license/Vilos92/media-controls.nvim.svg?style=for-the-badge
+[license-url]: https://github.com/Vilos92/media-controls/blob/master/LICENSE
