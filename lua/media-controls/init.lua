@@ -1,84 +1,5 @@
--- HELPERS
--- Helper functions for checking for the existence of `nowplaying-cli` and
--- getting the current media status.
-
-STATUS_DEFAULT =" Loading media..."
-STATUS_NO_MEDIA = "󰟎 No active media"
-STATUS_NOT_INSTALLED = " nowplaying-cli is not installed"
-
-local function check_is_nowplaying_cli_installed()
-  if vim.fn.executable("nowplaying-cli") == 0 then
-    return false
-  end
-
-  return true
-end
-
-local function get_now_playing()
-  if not check_is_nowplaying_cli_installed() then
-    return STATUS_NOT_INSTALLED
-  end
-
-  local artist = vim.fn.system(
-    "nowplaying-cli get-raw | rg -oP '(?<=kMRMediaRemoteNowPlayingInfoArtist = )[^\n]+' | sed 's/;$//' | sed 's/^\"//;s/\"$//'"
-  )
-  local title = vim.fn.system(
-    "nowplaying-cli get-raw | rg -oP '(?<=kMRMediaRemoteNowPlayingInfoTitle = )[^\n]+' | sed 's/;$//' | sed 's/^\"//;s/\"$//'"
-  )
-
-  if artist == "" and title == "" then
-    return STATUS_NO_MEDIA
-  end
-
-  if artist == "" then
-    return "󰋋 " .. vim.trim(title)
-  end
-
-  return "󰋋 " .. vim.trim(title) .. " - " .. vim.trim(artist)
-end
-
-local function play()
-  if not check_is_nowplaying_cli_installed() then
-    return STATUS_NOT_INSTALLED
-  end
-
-  vim.fn.system("nowplaying-cli play")
-end
-
-local function pause()
-  if not check_is_nowplaying_cli_installed() then
-    return STATUS_NOT_INSTALLED
-  end
-
-  vim.fn.system("nowplaying-cli pause")
-end
-
-local function toggle()
-  if not check_is_nowplaying_cli_installed() then
-    return STATUS_NOT_INSTALLED
-  end
-
-  vim.fn.system("nowplaying-cli togglePlayPause")
-end
-
-local function next()
-  if not check_is_nowplaying_cli_installed() then
-    return STATUS_NOT_INSTALLED
-  end
-
-  vim.fn.system("nowplaying-cli next")
-end
-
-local function previous()
-  if not check_is_nowplaying_cli_installed() then
-    return STATUS_NOT_INSTALLED
-  end
-
-  vim.fn.system("nowplaying-cli previous")
-end
-
--- MODULE
--- The nvim plugin for `media-controls`.
+local media_status = require("media-controls.utils.media-status")
+local nowplaying_cli = require("media-controls.utils.nowplaying-cli")
 
 local M = {}
 
@@ -89,57 +10,51 @@ function M.setup(opts)
   -- is an IO operation involved and we want to avoid blocking the caller.
   -- We instead cache the value in `STATUS_LINE` using a timer callback
   -- and return this cached value via `status_listen()`.
-  STATUS_LINE = STATUS_DEFAULT
+  STATUS_LINE = media_status.STATUS_DEFAULT
 end
 
--- STATUS
--- Methods to get and listen to the current media status.
-
 -- Begin an interval to poll the now playing status. If this is not run,
--- the `STATUS_LINE` will always be `STATUS_NO_MEDIA`.
+-- the `STATUS_LINE` will always be `STATUS_DEFAULT`.
 function M.status_poll()
   local timer = vim.loop.new_timer()
   timer:start(
     1000,
     10000,
     vim.schedule_wrap(function()
-      STATUS_LINE = get_now_playing() or STATUS_NO_MEDIA
+      STATUS_LINE = nowplaying_cli.get_now_playing() or media_status.STATUS_NO_MEDIA
     end)
   )
 end
 
 -- Retrieve cached status line.
 function M.status_cache()
-  return STATUS_LINE or STATUS_DEFAULT
+  return STATUS_LINE or media_status.STATUS_DEFAULT
 end
 
 --Retrieve the current media status using `nowplaying-cli`.
 function M.status_fetch()
-  STATUS_LINE = get_now_playing() or STATUS_NO_MEDIA
+  STATUS_LINE = nowplaying_cli.get_now_playing() or media_status.STATUS_NO_MEDIA
   print(STATUS_LINE)
 end
 
--- PLAYBACK CONTROLS
--- Methods to control media playback.
-
 function M.play()
-  play()
+  nowplaying_cli.play()
 end
 
 function M.pause()
-  pause()
+  nowplaying_cli.pause()
 end
 
 function M.toggle()
-  toggle()
+  nowplaying_cli.toggle()
 end
 
 function M.next()
-  next()
+  nowplaying_cli.next()
 end
 
 function M.previous()
-  previous()
+  nowplaying_cli.previous()
 end
 
 return M
