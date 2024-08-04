@@ -10,7 +10,10 @@ Provides controls and a status listener for media players on MacOS.
 
 <details>
     <summary>With <a href="https://github.com/folke/lazy.nvim">folke/lazy.nvim</a></summary>
-    <code>{ 'vilos92/media-controls.nvim' }</code>
+
+    ```lua
+    { 'vilos92/media-controls.nvim' }
+    ```
 </details>
 
 ## Commands
