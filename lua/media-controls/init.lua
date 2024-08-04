@@ -110,7 +110,7 @@ end
 
 -- Return cached status line.
 function M.status_listen()
-  return STATUS_LINE
+  return STATUS_LINE or DEFAULT_STATUS
 end
 
 function M.status()
