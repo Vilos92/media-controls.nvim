@@ -1,5 +1,7 @@
 # media-controls.nvim
 
+[![Apache 2.0 License][license-shield]][license-url]
+
 ### Media controls for neovim
 
 Provides controls and a status listener for media players on MacOS.
@@ -76,3 +78,8 @@ You can listen to the status of the media player for use in other plugins such a
     })
     ```
 </details>
+
+<!-- MARKDOWN LINKS & IMAGES -->
+
+[license-shield]: https://img.shields.io/github/license/Vilos92/typerion.svg?style=for-the-badge
+[license-url]: https://github.com/Vilos92/typerion/blob/master/LICENSE
