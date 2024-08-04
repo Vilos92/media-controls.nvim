@@ -61,7 +61,7 @@ end
 
 -- Retrieve cached status line.
 function M.status_cache()
-   return STATUS_LINE or media_status.STATUS_DEFAULT
+  return STATUS_LINE or media_status.STATUS_DEFAULT
 end
 
 -- Retrieve cached status line + elapsed percentage.
