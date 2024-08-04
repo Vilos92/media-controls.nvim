@@ -29,7 +29,7 @@ You can listen to the status of the media player, for use in other plugins such 
 
 <details>
     <summary>lualine.nvim example</summary>
-    <code>
+
     ```lua
     local media_controls = require("media-controls")
     media_controls.status_poll()
@@ -64,5 +64,4 @@ You can listen to the status of the media player, for use in other plugins such 
       },
     })
     ```
-    </code>
 </details>
