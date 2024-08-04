@@ -2,9 +2,17 @@
 
 ### Media controls for neovim
 
-**NOTE**: This plugin currently only supports macOS.
-
 Provides controls and a status listener for media players on MacOS.
+
+## Requirements
+
+This plugin currently only supports macOS.
+
+This plugin requires [nowplaying-cli](https://github.com/kirtan-shah/nowplaying-cli) in order to work. You can install it with:
+
+```bash
+brew install nowplaying-cli
+```
 
 ## Installation
 
