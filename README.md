@@ -69,7 +69,7 @@ You can listen to the status of the media player for use in other plugins such a
         lualine_a = {},
         lualine_b = {},
         lualine_c = {
-          media_controls.listen,
+          media_controls.status_listen,
         },
         lualine_x = { "filename", "location" },
         lualine_y = {},
