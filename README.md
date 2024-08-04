@@ -36,7 +36,7 @@ brew install nowplaying-cli
 
 ## Listening to status
 
-You can listen to the status of the media player, for use in other plugins such as [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim).
+You can listen to the status of the media player for use in other plugins such as [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim).
 
 <details>
     <summary>lualine.nvim example</summary>
