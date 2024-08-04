@@ -6,11 +6,14 @@ local M = {}
 function M.setup(opts)
   opts = opts or {}
 
-  -- We do not directly return the result of get_now_playing() as there is
-  -- is an IO operation involved and we want to avoid blocking the caller.
-  -- We instead cache the value in `STATUS_LINE` using a timer callback
-  -- and return this cached value via `status_listen()`.
+  -- We do not directly return the result of get_now_playing() as there is is an IO operation involved
+  -- and we want to avoid blocking the caller. We instead cache the value in `STATUS_LINE` using a
+  -- timer callback and return this cached value via `status_listen()`.
   STATUS_LINE = media_status.STATUS_DEFAULT
+
+  -- Similar to the status line, we cache the elapsed percentage of the currently playing media. This is
+  -- updated every second as opposed to the longer refresh used for the track and artist information.
+  ELAPSED_PERCENTAGE = nil
 end
 
 -- Begin an interval to poll the now playing status. If this is not run,
@@ -26,9 +29,51 @@ function M.status_poll()
   )
 end
 
+-- Begin an interval to poll the elapsed percentage of the currently playing media.
+function M.elapsed_percentage_poll()
+  local timer = vim.loop.new_timer()
+  timer:start(
+    1000,
+    1000,
+    vim.schedule_wrap(function()
+      if not STATUS_LINE or STATUS_LINE == media_status.STATUS_NO_MEDIA then
+        ELAPSED_PERCENTAGE = nil
+        return
+      end
+
+      local new_elapsed_percentage = nowplaying_cli.get_elapsed_percentage()
+
+      -- There is a performance hit to calling `get_now_playing()` every second, so we only
+      -- attempt to retrieve an updated status line if the elapsed percentage has reset.
+      if ELAPSED_PERCENTAGE and (new_elapsed_percentage or 0) < ELAPSED_PERCENTAGE then
+        STATUS_LINE = nowplaying_cli.get_now_playing() or media_status.STATUS_NO_MEDIA
+      end
+
+      ELAPSED_PERCENTAGE = new_elapsed_percentage
+    end)
+  )
+end
+
+function M.poll()
+  M.status_poll()
+  M.elapsed_percentage_poll()
+end
+
 -- Retrieve cached status line.
 function M.status_cache()
-  return STATUS_LINE or media_status.STATUS_DEFAULT
+   return STATUS_LINE or media_status.STATUS_DEFAULT
+end
+
+-- Retrieve cached status line + elapsed percentage.
+function M.playback_cache()
+  local status_line = STATUS_LINE or media_status.STATUS_DEFAULT
+  local elapsed_percentage = ELAPSED_PERCENTAGE
+
+  if elapsed_percentage == nil then
+    return status_line
+  end
+
+  return status_line .. "  " .. elapsed_percentage .. "󰏰"
 end
 
 --Retrieve the current media status using `nowplaying-cli`.

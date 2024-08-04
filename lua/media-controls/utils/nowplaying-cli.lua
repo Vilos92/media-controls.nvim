@@ -40,6 +40,10 @@ function M.get_elapsed_percentage()
   elapsedTime = tonumber(elapsedTime)
   duration = tonumber(duration)
 
+  if elapsedTime == nil or duration == nil then
+    return nil
+  end
+
   local percentage = math.floor((elapsedTime / duration) * 100)
   if percentage > 100 then
     return nil
