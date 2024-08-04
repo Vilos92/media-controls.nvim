@@ -89,7 +89,6 @@ function M.setup(opts)
   -- is an IO operation involved and we want to avoid blocking the caller.
   -- We instead cache the value in `STATUS_LINE` using a timer callback
   -- and return this cached value via `status_listen()`.
-  -- STATUS_LINE = STATUS_NO_MEDIA
   STATUS_LINE = STATUS_DEFAULT
 end
 
@@ -99,8 +98,6 @@ end
 -- Begin an interval to poll the now playing status. If this is not run,
 -- the `STATUS_LINE` will always be `STATUS_NO_MEDIA`.
 function M.status_poll()
-  -- STATUS_LINE = get_now_playing() or STATUS_NO_MEDIA
-
   local timer = vim.loop.new_timer()
   timer:start(
     1000,
@@ -111,14 +108,13 @@ function M.status_poll()
   )
 end
 
--- Return cached status line.
-function M.status_listen()
-  -- return STATUS_LINE or STATUS_NO_MEDIA
+-- Retrieve cached status line.
+function M.status_cache()
   return STATUS_LINE or STATUS_DEFAULT
 end
 
-function M.status()
-  -- STATUS_LINE = get_now_playing() or STATUS_NO_MEDIA
+--Retrieve the current media status using `nowplaying-cli`.
+function M.status_fetch()
   STATUS_LINE = get_now_playing() or STATUS_NO_MEDIA
   print(STATUS_LINE)
 end

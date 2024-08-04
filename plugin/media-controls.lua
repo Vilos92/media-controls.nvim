@@ -6,22 +6,22 @@ if _G.loaded_music_controls then
   return
 end
 
-vim.api.nvim_create_user_command("MCStatus", function()
+vim.api.nvim_create_user_command("MediaControlStatus", function()
   require("media-controls").status()
 end, {})
-vim.api.nvim_create_user_command("MCPlay", function()
+vim.api.nvim_create_user_command("MediaControlPlay", function()
   require("media-controls").play()
 end, {})
-vim.api.nvim_create_user_command("MCPause", function()
+vim.api.nvim_create_user_command("MediaControlPause", function()
   require("media-controls").pause()
 end, {})
-vim.api.nvim_create_user_command("MCToggle", function()
+vim.api.nvim_create_user_command("MediaControlToggle", function()
   require("media-controls").toggle()
 end, {})
-vim.api.nvim_create_user_command("MCNext", function()
+vim.api.nvim_create_user_command("MediaControlNext", function()
   require("media-controls").next()
 end, {})
-vim.api.nvim_create_user_command("MCPrevious", function()
+vim.api.nvim_create_user_command("MediaControlPrevious", function()
   require("media-controls").previous()
 end, {})
 
