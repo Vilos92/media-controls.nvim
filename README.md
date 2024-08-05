@@ -2,11 +2,13 @@
 
 [![Apache 2.0 License][license-shield]][license-url]
 
-### Media controls for neovim
+### Media Controls for Neovim
 
 Provides controls and a status listener for media players on MacOS.
 
 <img src="preview.gif" width="800em"/> <br>
+
+This Neovim plugin provides controls and a status listener for media players on macOS. It enables you to easily access track information, elapsed time, and control playback directly from your Neovim environment. Whether you want to play, pause, or skip tracks, this plugin has got you covered.
 
 ## Requirements
 
