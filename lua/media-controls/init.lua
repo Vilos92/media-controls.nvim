@@ -1,9 +1,12 @@
 local media_status = require("media-controls.utils.media-status")
 local nowplaying_cli = require("media-controls.utils.nowplaying-cli")
 
+-- POLLS
 -- Only one timer should exist for each polling function.
-IS_POLLING_STATUS = false
-IS_POLLING_ELAPSED_PERCENTAGE = false
+local Polls = {
+  is_polling_status = false,
+  is_polling_elapsed_percentage = false
+}
 
 -- MEDIA INFO
 -- The `MediaInfo` object is used to store information about the currently playing media.
@@ -13,8 +16,8 @@ local MediaInfo = {
   artist = nil,
   elapsed_time = nil,
   duration = nil,
-  -- We cache the `elapsed_percentage` of the currently playing media. This is updated every
-  -- second as opposed to the longer refresh used for the track and artist information.
+  -- We store the previous `elapsed_percentage` to determine if a track has skipped or reset.
+  -- This allows us to determine if it makes sense to refresh the track and artist information.
   elapsed_percentage = nil
 }
 
@@ -37,6 +40,9 @@ MediaInfo.get_status_line = function()
   return "󰋋 " .. MediaInfo.track .. " - " .. MediaInfo.artist
 end
 
+MediaInfo.get_playback_line = function()
+end
+
 -- PLUGIN
 -- This is the`media-controls` plugin module.
 
@@ -49,7 +55,7 @@ end
 -- Begin an interval to poll the now playing status. If this is not run, the result
 -- of `MediaInfo.get_status_line()` will always be `media_status.STATUS_DEFAULT`.
 function M.status_poll()
-  if IS_POLLING_STATUS then
+  if Polls.is_polling_status then
     return
   end
 
@@ -63,12 +69,12 @@ function M.status_poll()
     end)
   )
 
-  IS_POLLING_STATUS = true
+  Polls.is_polling_status = true
 end
 
 -- Begin an interval to poll the elapsed elapsed_percentage of the currently playing media.
 function M.elapsed_percentage_poll()
-  if IS_POLLING_ELAPSED_PERCENTAGE then
+  if Polls.is_polling_elapsed_percentage then
     return
   end
 
@@ -90,12 +96,12 @@ function M.elapsed_percentage_poll()
       MediaInfo.duration = nowplaying_cli.get_duration()
 
       if MediaInfo.elapsed_time == nil or MediaInfo.duration == nil then
-        return nil
+        return
       end
 
       local elapsed_percentage = math.floor((MediaInfo.elapsed_time / MediaInfo.duration) * 100)
       if elapsed_percentage > 100 then
-        return nil
+        return
       end
 
       -- There is a performance hit to calling `nowplaying_cli` every second, so we only
@@ -109,7 +115,7 @@ function M.elapsed_percentage_poll()
     end)
   )
 
-  IS_POLLING_ELAPSED_PERCENTAGE = true
+  Polls.is_polling_elapsed_percentage = true
 end
 
 function M.poll()
@@ -130,13 +136,6 @@ end
 
 -- Retrieve cached status line + elapsed elapsed_percentage.
 function M.playback_cache()
-  -- format from media-info
-  local media_info_playback_line = ""
-  if MediaInfo.elapsed_time and MediaInfo.duration then
-    media_info_playback_line = MediaInfo.elapsed_time .. " / " .. MediaInfo.duration
-  end
-  print(media_info_playback_line)
-
   local status_line = MediaInfo.get_status_line()
   local elapsed_percentage = MediaInfo.elapsed_percentage
 
