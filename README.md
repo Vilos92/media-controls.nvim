@@ -55,6 +55,7 @@ In order to listen to the status, you can use the `poll_status` function. This w
 
 ```lua
 local media_controls = require("media-controls")
+-- If using `media-controls` in multiple places, `poll_status` should only be called once.
 media_controls.poll_status()
 ```
 
@@ -77,6 +78,7 @@ media_controls.get_status()
 
     ```lua
     local media_controls = require("media-controls")
+    -- If using `media-controls` in multiple places, `poll_status` should only be called once.
     media_controls.poll_status()
 
     require("lualine").setup({
@@ -116,6 +118,8 @@ media_controls.get_status()
 
     ```lua
     local media_controls = require("media-controls")
+    -- If using `media-controls` in multiple places, `poll_status` should only be called once.
+    media_controls.poll_status()
 
     local footer = (function()
       local media_status = ""
