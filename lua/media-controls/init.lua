@@ -1,24 +1,32 @@
 local media_status = require("media-controls.utils.media-status")
+
+-- We do not directly return the result of get_now_playing() as there is is an IO operation involved
+-- and we want to avoid blocking the caller. We instead cache the value in `STATUS_LINE` using a
+-- timer callback and return this cached value via `status_listen()`.
+STATUS_LINE = media_status.STATUS_DEFAULT
+
+-- Similar to the status line, we cache the elapsed percentage of the currently playing media. This is
+-- updated every second as opposed to the longer refresh used for the track and artist information.
+ELAPSED_PERCENTAGE = nil
+
+IS_POLLING_STATUS = false
+IS_POLLING_ELAPSED_PERCENTAGE=false
+
 local nowplaying_cli = require("media-controls.utils.nowplaying-cli")
 
 local M = {}
 
 function M.setup(opts)
   opts = opts or {}
-
-  -- We do not directly return the result of get_now_playing() as there is is an IO operation involved
-  -- and we want to avoid blocking the caller. We instead cache the value in `STATUS_LINE` using a
-  -- timer callback and return this cached value via `status_listen()`.
-  STATUS_LINE = media_status.STATUS_DEFAULT
-
-  -- Similar to the status line, we cache the elapsed percentage of the currently playing media. This is
-  -- updated every second as opposed to the longer refresh used for the track and artist information.
-  ELAPSED_PERCENTAGE = nil
 end
 
 -- Begin an interval to poll the now playing status. If this is not run,
 -- the `STATUS_LINE` will always be `STATUS_DEFAULT`.
 function M.status_poll()
+  if IS_POLLING_STATUS then
+    return
+  end
+
   local timer = vim.loop.new_timer()
   timer:start(
     1000,
@@ -27,10 +35,16 @@ function M.status_poll()
       STATUS_LINE = nowplaying_cli.get_now_playing() or media_status.STATUS_NO_MEDIA
     end)
   )
+
+  IS_POLLING_STATUS=true
 end
 
 -- Begin an interval to poll the elapsed percentage of the currently playing media.
 function M.elapsed_percentage_poll()
+  if IS_POLLING_ELAPSED_PERCENTAGE then
+    return
+  end
+
   local timer = vim.loop.new_timer()
   timer:start(
     1000,
@@ -52,6 +66,8 @@ function M.elapsed_percentage_poll()
       ELAPSED_PERCENTAGE = new_elapsed_percentage
     end)
   )
+
+  IS_POLLING_ELAPSED_PERCENTAGE=true
 end
 
 function M.poll()
