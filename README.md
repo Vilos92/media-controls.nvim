@@ -16,7 +16,7 @@ This plugin requires [nowplaying-cli](https://github.com/kirtan-shah/nowplaying-
 brew install nowplaying-cli
 ```
 
-Additionally, a patched font is required. We have tested it with [Nerd Fonts](https://www.nerdfonts.com/). Please ensure you have a patched font installed and set as your terminal or Neovim GUI font for the best experience.
+Additionally, a patched font is required. This has been tested with [Nerd Fonts](https://www.nerdfonts.com/). Please ensure you have a patched font installed and set as your terminal or Neovim GUI font for the best experience.
 
 
 ## Installation
@@ -62,7 +62,7 @@ You can listen to the status of the media player for use in other plugins such a
         lualine_a = { "mode" },
         lualine_b = { "branch", "diff", "diagnostics" },
         lualine_c = {
-          media_controls.status_listen,
+          media_controls.get_playback(),
         },
         lualine_x = {
           "filename",
@@ -78,7 +78,7 @@ You can listen to the status of the media player for use in other plugins such a
         lualine_a = {},
         lualine_b = {},
         lualine_c = {
-          media_controls.status_listen,
+          media_controls.get_playback(),
         },
         lualine_x = { "filename", "location" },
         lualine_y = {},
