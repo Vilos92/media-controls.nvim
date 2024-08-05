@@ -8,7 +8,7 @@ local Polls = {
   is_polling_elapsed_percentage = false,
 
   status_timer = nil,
-  elapsed_percentage_timer = nil
+  elapsed_percentage_timer = nil,
 }
 
 -- MEDIA INFO
@@ -21,7 +21,7 @@ local MediaInfo = {
   duration = nil,
   -- We store the previous `elapsed_percentage` to determine if a track has skipped or reset.
   -- This allows us to determine if it makes sense to refresh the track and artist information.
-  elapsed_percentage = nil
+  elapsed_percentage = nil,
 }
 
 -- We do not directly return the results from `nowplaying-cli` as there is is an IO operation involved
@@ -43,8 +43,7 @@ MediaInfo.get_status_line = function()
   return "󰋋 " .. MediaInfo.track .. " - " .. MediaInfo.artist
 end
 
-MediaInfo.get_playback_line = function()
-end
+MediaInfo.get_playback_line = function() end
 
 -- PLUGIN
 -- This is the`media-controls` plugin module.
