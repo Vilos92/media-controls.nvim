@@ -54,7 +54,7 @@ You can listen to the status of the media player for use in other plugins such a
 
     ```lua
     local media_controls = require("media-controls")
-    media_controls.status_poll()
+    media_controls.poll_status()
 
     require("lualine").setup({
       options = { theme = "auto" },
@@ -90,6 +90,7 @@ You can listen to the status of the media player for use in other plugins such a
 
 ## Related Projects
 
+- [nowplaying-cli](https://github.com/kirtan-shah/nowplaying-cli)
 - [music-controls.nvim](https://github.com/AntonVanAssche/music-controls.nvim)
 - [nvim-spotify](https://github.com/KadoBOT/nvim-spotify)
 
