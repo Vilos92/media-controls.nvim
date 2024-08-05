@@ -88,6 +88,11 @@ You can listen to the status of the media player for use in other plugins such a
     ```
 </details>
 
+## Related Projects
+
+- [music-controls.nvim](https://github.com/AntonVanAssche/music-controls.nvim)
+- [nvim-spotify](https://github.com/KadoBOT/nvim-spotify)
+
 <!-- MARKDOWN LINKS & IMAGES -->
 
 [license-shield]: https://img.shields.io/github/license/Vilos92/media-controls.nvim.svg?style=for-the-badge
