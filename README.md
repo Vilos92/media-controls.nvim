@@ -76,82 +76,82 @@ media_controls.get_status()
 ```
 
 <details>
-    <summary>lualine.nvim example</summary>
+<summary>lualine.nvim example</summary>
 
-    ```lua
-    local media_controls = require("media-controls")
-    -- If using `media-controls` in multiple places, `poll_status` should only be called once.
-    media_controls.poll_status()
+```lua
+local media_controls = require("media-controls")
+-- If using `media-controls` in multiple places, `poll_status` should only be called once.
+media_controls.poll_status()
 
-    require("lualine").setup({
-      options = { theme = "auto" },
-      sections = {
-        lualine_a = { "mode" },
-        lualine_b = { "branch", "diff", "diagnostics" },
-        lualine_c = {
-          media_controls.get_playback(),
-        },
-        lualine_x = {
-          "filename",
-          "encoding",
-          "fileformat",
-          "filetype",
-        },
-        lualine_y = { "progress" },
-        lualine_z = { "location" },
-      },
+require("lualine").setup({
+  options = { theme = "auto" },
+  sections = {
+    lualine_a = { "mode" },
+    lualine_b = { "branch", "diff", "diagnostics" },
+    lualine_c = {
+      media_controls.get_playback(),
+    },
+    lualine_x = {
+      "filename",
+      "encoding",
+      "fileformat",
+      "filetype",
+    },
+    lualine_y = { "progress" },
+    lualine_z = { "location" },
+  },
 
-      inactive_sections = {
-        lualine_a = {},
-        lualine_b = {},
-        lualine_c = {
-          media_controls.get_playback(),
-        },
-        lualine_x = { "filename", "location" },
-        lualine_y = {},
-        lualine_z = {},
-      },
-    })
-    ```
+  inactive_sections = {
+    lualine_a = {},
+    lualine_b = {},
+    lualine_c = {
+      media_controls.get_playback(),
+    },
+    lualine_x = { "filename", "location" },
+    lualine_y = {},
+    lualine_z = {},
+  },
+})
+```
 </details>
 
 <details>
-    <summary>mini.nvim example</summary>
+<summary>mini.nvim example</summary>
 
-    ```lua
-    local media_controls = require("media-controls")
-    -- If using `media-controls` in multiple places, `poll_status` should only be called once.
-    media_controls.poll_status()
+```lua
+local media_controls = require("media-controls")
+-- If using `media-controls` in multiple places, `poll_status` should only be called once.
+media_controls.poll_status()
 
-    local footer = (function()
-      local media_status = ""
-      local timer = vim.loop.new_timer()
+local footer = (function()
+  local media_status = ""
+  local timer = vim.loop.new_timer()
 
-      timer:start(
-        0,
-        1000,
-        vim.schedule_wrap(function()
-          if vim.bo.filetype ~= "ministarter" then
-            return
-          end
-
-          local new_media_status = media_controls.get_status()
-          new_media_status = new_media_status or ""
-
-          if new_media_status == media_status then
-            return
-          end
-
-          media_status = new_media_status
-          MiniStarter.refresh()
-        end)
-      )
-
-      return function()
-        return "Hello,\n\n📅 The current date is " .. os.date("%B %d, %Y") .. "\n\n" .. media_status
+  timer:start(
+    0,
+    1000,
+    vim.schedule_wrap(function()
+      if vim.bo.filetype ~= "ministarter" then
+        return
       end
-    end)()
-    ```
+
+      local new_media_status = media_controls.get_status()
+      new_media_status = new_media_status or ""
+
+      if new_media_status == media_status then
+        return
+      end
+
+      media_status = new_media_status
+      MiniStarter.refresh()
+    end)
+  )
+
+  return function()
+    return "Hello,\n\n📅 The current date is " .. os.date("%B %d, %Y") .. "\n\n" .. media_status
+  end
+end)()
+```
 </details>
 
 ## Known Issues
