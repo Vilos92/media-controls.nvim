@@ -10,24 +10,47 @@ end
 
 local M = {}
 
-function M.get_now_playing()
+-- QUERIES
+
+function M.get_artist()
   if not check_is_nowplaying_cli_installed() then
     return media_status.STATUS_NOT_INSTALLED
   end
 
   local artist = vim.fn.system("nowplaying-cli get artist")
-  local title = vim.fn.system("nowplaying-cli get title")
-
-  if artist == "" and title == "" then
-    return media_status.STATUS_NO_MEDIA
-  end
-
-  if artist == "" then
-    return "󰋋 " .. vim.trim(title)
-  end
-
-  return "󰋋 " .. vim.trim(title) .. " - " .. vim.trim(artist)
+  return vim.trim(artist)
 end
+
+function M.get_title()
+  if not check_is_nowplaying_cli_installed() then
+    return media_status.STATUS_NOT_INSTALLED
+  end
+
+  local title = vim.fn.system("nowplaying-cli get title")
+  return vim.trim(title)
+end
+
+function M.get_elapsed_time()
+  if not check_is_nowplaying_cli_installed() then
+    return media_status.STATUS_NOT_INSTALLED
+  end
+
+  local elapsedTime = vim.fn.system("nowplaying-cli get elapsedTime")
+
+  return tonumber(elapsedTime)
+end
+
+function M.get_duration()
+  if not check_is_nowplaying_cli_installed() then
+    return media_status.STATUS_NOT_INSTALLED
+  end
+
+  local duration = vim.fn.system("nowplaying-cli get duration")
+
+  return tonumber(duration)
+end
+
+-- ACTIONS
 
 function M.play()
   if not check_is_nowplaying_cli_installed() then
