@@ -51,6 +51,27 @@ Additionally, a patched font is required. This has been tested with [Nerd Fonts]
 
 You can listen to the status of the media player for use in other plugins such as [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim).
 
+In order to listen to the status, you can use the `poll_status` function. This will poll the status of the media player.
+
+```lua
+local media_controls = require("media-controls")
+media_controls.poll_status()
+```
+
+You can then use the `get_playback` function to get the current status of the media player.
+
+```lua
+-- Returns: "Track - Artist > Elapsed%"
+media_controls.get_playback()
+```
+
+If you do not want to include the elapsed percentage, you can instead use `get_status`.
+
+```lua
+-- Returns: "Track - Artist"
+media_controls.get_status()
+```
+
 <details>
     <summary>lualine.nvim example</summary>
 
@@ -87,6 +108,43 @@ You can listen to the status of the media player for use in other plugins such a
         lualine_z = {},
       },
     })
+    ```
+</details>
+
+<details>
+    <summary>mini.nvim example</summary>
+
+    ```lua
+    local media_controls = require("media-controls")
+
+    local footer = (function()
+      local media_status = ""
+      local timer = vim.loop.new_timer()
+
+      timer:start(
+        0,
+        1000,
+        vim.schedule_wrap(function()
+          if vim.bo.filetype ~= "ministarter" then
+            return
+          end
+
+          local new_media_status = media_controls.get_status()
+          new_media_status = new_media_status or ""
+
+          if new_media_status == media_status then
+            return
+          end
+
+          media_status = new_media_status
+          MiniStarter.refresh()
+        end)
+      )
+
+      return function()
+        return "Hello,\n\n📅 The current date is " .. os.date("%B %d, %Y") .. "\n\n" .. media_status
+      end
+    end)()
     ```
 </details>
 
