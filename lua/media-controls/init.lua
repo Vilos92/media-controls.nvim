@@ -9,8 +9,9 @@ STATUS_LINE = media_status.STATUS_DEFAULT
 -- updated every second as opposed to the longer refresh used for the track and artist information.
 ELAPSED_PERCENTAGE = nil
 
+-- Only one timer should exist for each polling function.
 IS_POLLING_STATUS = false
-IS_POLLING_ELAPSED_PERCENTAGE=false
+IS_POLLING_ELAPSED_PERCENTAGE = false
 
 local nowplaying_cli = require("media-controls.utils.nowplaying-cli")
 
@@ -36,7 +37,7 @@ function M.status_poll()
     end)
   )
 
-  IS_POLLING_STATUS=true
+  IS_POLLING_STATUS = true
 end
 
 -- Begin an interval to poll the elapsed percentage of the currently playing media.
@@ -67,7 +68,7 @@ function M.elapsed_percentage_poll()
     end)
   )
 
-  IS_POLLING_ELAPSED_PERCENTAGE=true
+  IS_POLLING_ELAPSED_PERCENTAGE = true
 end
 
 function M.poll()
