@@ -54,7 +54,7 @@ end
 
 -- Begin an interval to poll the now playing status. If this is not run, the result
 -- of `MediaInfo.get_status_line()` will always be `media_status.STATUS_DEFAULT`.
-function M.status_poll()
+function M.poll_status()
   if Polls.is_polling_status then
     return
   end
@@ -73,7 +73,7 @@ function M.status_poll()
 end
 
 -- Begin an interval to poll the elapsed elapsed_percentage of the currently playing media.
-function M.elapsed_percentage_poll()
+function M.poll_elapsed_percentage()
   if Polls.is_polling_elapsed_percentage then
     return
   end
@@ -101,6 +101,7 @@ function M.elapsed_percentage_poll()
 
       local elapsed_percentage = math.floor((MediaInfo.elapsed_time / MediaInfo.duration) * 100)
       if elapsed_percentage > 100 then
+        MediaInfo.elapsed_percentage = nil
         return
       end
 
@@ -119,23 +120,17 @@ function M.elapsed_percentage_poll()
 end
 
 function M.poll()
-  M.status_poll()
-  M.elapsed_percentage_poll()
+  M.poll_status()
+  M.poll_elapsed_percentage()
 end
 
 -- Retrieve cached status line.
-function M.status_cache()
-  -- format from media-info
-  local media_info_status_line = ""
-  if MediaInfo.track and MediaInfo.artist then
-    media_info_status_line = MediaInfo.track .. " - " .. MediaInfo.artist
-  end
-
+function M.get_status()
   return MediaInfo.get_status_line()
 end
 
 -- Retrieve cached status line + elapsed elapsed_percentage.
-function M.playback_cache()
+function M.get_playback()
   local status_line = MediaInfo.get_status_line()
   local elapsed_percentage = MediaInfo.elapsed_percentage
 
@@ -146,19 +141,23 @@ function M.playback_cache()
   return status_line .. "  " .. elapsed_percentage .. "󰏰"
 end
 
---Retrieve the current media status using `nowplaying-cli`.
-function M.status_print()
+function M.print_status()
   local status_line = MediaInfo.get_status_line()
   print(status_line)
 end
 
-function M.elapsed_percentage_print()
-  local elapsed_percentage = nowplaying_cli.get_elapsed_percentage()
-  if elapsed_percentage == nil then
+function M.print_elapsed_percentage()
+  MediaInfo.elapsed_time = nowplaying_cli.get_elapsed_time()
+  MediaInfo.duration = nowplaying_cli.get_duration()
+
+  if MediaInfo.elapsed_time == nil or MediaInfo.duration == nil or MediaInfo.elapsed_time > MediaInfo.duration then
     print("󰏰 unavailable")
     return
   end
 
+  -- Do not cache this value as `MediaInfo.elapsed_percentage` is used to determine if state
+  -- should be refreshed.
+  local elapsed_percentage = math.floor((MediaInfo.elapsed_time / MediaInfo.duration) * 100)
   print(elapsed_percentage .. "󰏰")
 end
 
