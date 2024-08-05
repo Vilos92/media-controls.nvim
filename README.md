@@ -35,19 +35,19 @@ Additionally, a patched font is required. This has been tested with [Nerd Fonts]
 
 ### Queries
 
-- `MediaControlStatus` - Get the current status of the media player.
+- `:MediaControlStatus` - Get the current status of the media player.
   - Returns the track and artist.
-- `MediaControlPlayback` - Get the current playback of the media player.
+- `:MediaControlPlayback` - Get the current playback of the media player.
   - Returns the track, artist, and elapsed percentage of the current track.
-- `MediaControlElapsedPct` - Get the elapsed percentage of the current track.
+- `:MediaControlElapsedPct` - Get the elapsed percentage of the current track.
 
 ### Controls
 
-- `MediaControlPlay` - Start playback.
-- `MediaControlPause` - Pause playback.
-- `MediaControlToggle` - Toggle playback.
-- `MediaControlNext` - Skip to the next track.
-- `MediaControlPrevious` - Skip to the previous track.
+- `:MediaControlPlay` - Start playback.
+- `:MediaControlPause` - Pause playback.
+- `:MediaControlToggle` - Toggle playback.
+- `:MediaControlNext` - Skip to the next track.
+- `:MediaControlPrevious` - Skip to the previous track.
 
 ## Listening to status
 
