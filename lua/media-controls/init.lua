@@ -133,6 +133,11 @@ function M.print_status()
   print(status_line)
 end
 
+function M.print_playback()
+  local playback = M.get_playback()
+  print(playback)
+end
+
 function M.print_elapsed_percentage()
   local status_line = MediaInfo.get_status()
 
