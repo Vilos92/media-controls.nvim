@@ -33,16 +33,11 @@ MediaInfo.get_status = function()
   return "󰋋 " .. MediaInfo.track .. " - " .. MediaInfo.artist
 end
 
-MediaInfo.get_playback = function() end
-
 -- POLLS
 -- Only one timer should exist for each polling function.
 local Polls = {
-  is_polling_status = false,
-  is_polling_elapsed_percentage = false,
-
-  status_timer = nil,
-  elapsed_percentage_timer = nil,
+  status_timer = vim.loop.new_timer(),
+  elapsed_percentage_timer = vim.loop.new_timer(),
 }
 
 -- PLUGIN
@@ -57,14 +52,6 @@ end
 -- Begin an interval to poll the now playing status. If this is not run, the result
 -- of `MediaInfo.get_status()` will always be `media_status.STATUS_DEFAULT`.
 function M.poll_status()
-  if Polls.is_polling_status then
-    return
-  end
-
-  if not Polls.status_timer then
-    Polls.status_timer = vim.loop.new_timer()
-  end
-
   Polls.status_timer:stop()
 
   Polls.status_timer:start(
@@ -75,20 +62,10 @@ function M.poll_status()
       MediaInfo.artist = nowplaying_cli.get_artist()
     end)
   )
-
-  Polls.is_polling_status = true
 end
 
 -- Begin an interval to poll the elapsed elapsed_percentage of the currently playing media.
 function M.poll_elapsed_percentage()
-  if Polls.is_polling_elapsed_percentage then
-    return
-  end
-
-  if not Polls.elapsed_percentage_timer then
-    Polls.elapsed_percentage_timer = vim.loop.new_timer()
-  end
-
   Polls.elapsed_percentage_timer:stop()
 
   Polls.elapsed_percentage_timer:start(
@@ -127,8 +104,6 @@ function M.poll_elapsed_percentage()
       MediaInfo.elapsed_percentage = elapsed_percentage
     end)
   )
-
-  Polls.is_polling_elapsed_percentage = true
 end
 
 function M.poll()
