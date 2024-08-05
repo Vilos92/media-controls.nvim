@@ -1,16 +1,6 @@
 local media_status = require("media-controls.utils.media-status")
 local nowplaying_cli = require("media-controls.utils.nowplaying-cli")
 
--- POLLS
--- Only one timer should exist for each polling function.
-local Polls = {
-  is_polling_status = false,
-  is_polling_elapsed_percentage = false,
-
-  status_timer = nil,
-  elapsed_percentage_timer = nil,
-}
-
 -- MEDIA INFO
 -- The `MediaInfo` object is used to store information about the currently playing media.
 
@@ -27,7 +17,7 @@ local MediaInfo = {
 -- We do not directly return the results from `nowplaying-cli` as there is is an IO operation involved
 -- and we want to avoid blocking the caller. We instead cache relevant values in `MediaInfo` using a
 -- timer callback and return formatted values value via `get_status()`.
-MediaInfo.get_status_line = function()
+MediaInfo.get_status = function()
   if MediaInfo.track == nil and MediaInfo.artist == nil then
     return media_status.STATUS_DEFAULT
   end
@@ -43,7 +33,17 @@ MediaInfo.get_status_line = function()
   return "󰋋 " .. MediaInfo.track .. " - " .. MediaInfo.artist
 end
 
-MediaInfo.get_playback_line = function() end
+MediaInfo.get_playback = function() end
+
+-- POLLS
+-- Only one timer should exist for each polling function.
+local Polls = {
+  is_polling_status = false,
+  is_polling_elapsed_percentage = false,
+
+  status_timer = nil,
+  elapsed_percentage_timer = nil,
+}
 
 -- PLUGIN
 -- This is the`media-controls` plugin module.
@@ -55,7 +55,7 @@ function M.setup(opts)
 end
 
 -- Begin an interval to poll the now playing status. If this is not run, the result
--- of `MediaInfo.get_status_line()` will always be `media_status.STATUS_DEFAULT`.
+-- of `MediaInfo.get_status()` will always be `media_status.STATUS_DEFAULT`.
 function M.poll_status()
   if Polls.is_polling_status then
     return
@@ -95,7 +95,7 @@ function M.poll_elapsed_percentage()
     1000,
     1000,
     vim.schedule_wrap(function()
-      local status_line = MediaInfo.get_status_line()
+      local status_line = MediaInfo.get_status()
 
       if not status_line or status_line == media_status.STATUS_NO_MEDIA then
         MediaInfo.elapsed_time = nil
@@ -138,12 +138,12 @@ end
 
 -- Retrieve cached status line.
 function M.get_status()
-  return MediaInfo.get_status_line()
+  return MediaInfo.get_status()
 end
 
 -- Retrieve cached status line + elapsed elapsed_percentage.
 function M.get_playback()
-  local status_line = MediaInfo.get_status_line()
+  local status_line = MediaInfo.get_status()
   local elapsed_percentage = MediaInfo.elapsed_percentage
 
   if elapsed_percentage == nil then
@@ -154,12 +154,12 @@ function M.get_playback()
 end
 
 function M.print_status()
-  local status_line = MediaInfo.get_status_line()
+  local status_line = MediaInfo.get_status()
   print(status_line)
 end
 
 function M.print_elapsed_percentage()
-  local status_line = MediaInfo.get_status_line()
+  local status_line = MediaInfo.get_status()
 
   if not status_line or status_line == media_status.STATUS_NO_MEDIA then
     print("󰏰 unavailable")
