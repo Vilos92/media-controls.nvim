@@ -5,7 +5,10 @@ local nowplaying_cli = require("media-controls.utils.nowplaying-cli")
 -- Only one timer should exist for each polling function.
 local Polls = {
   is_polling_status = false,
-  is_polling_elapsed_percentage = false
+  is_polling_elapsed_percentage = false,
+
+  status_timer = nil,
+  elapsed_percentage_timer = nil
 }
 
 -- MEDIA INFO
@@ -21,9 +24,9 @@ local MediaInfo = {
   elapsed_percentage = nil
 }
 
--- We do not directly return the result of get_now_playing() as there is is an IO operation involved
+-- We do not directly return the results from `nowplaying-cli` as there is is an IO operation involved
 -- and we want to avoid blocking the caller. We instead cache relevant values in `MediaInfo` using a
--- timer callback and return formatted values value via `status_cache()`.
+-- timer callback and return formatted values value via `get_status()`.
 MediaInfo.get_status_line = function()
   if MediaInfo.track == nil and MediaInfo.artist == nil then
     return media_status.STATUS_DEFAULT
@@ -59,8 +62,13 @@ function M.poll_status()
     return
   end
 
-  local timer = vim.loop.new_timer()
-  timer:start(
+  if not Polls.status_timer then
+    Polls.status_timer = vim.loop.new_timer()
+  end
+
+  Polls.status_timer:stop()
+
+  Polls.status_timer:start(
     1000,
     10000,
     vim.schedule_wrap(function()
@@ -78,8 +86,13 @@ function M.poll_elapsed_percentage()
     return
   end
 
-  local timer = vim.loop.new_timer()
-  timer:start(
+  if not Polls.elapsed_percentage_timer then
+    Polls.elapsed_percentage_timer = vim.loop.new_timer()
+  end
+
+  Polls.elapsed_percentage_timer:stop()
+
+  Polls.elapsed_percentage_timer:start(
     1000,
     1000,
     vim.schedule_wrap(function()
@@ -105,7 +118,7 @@ function M.poll_elapsed_percentage()
         return
       end
 
-      -- There is a performance hit to calling `nowplaying_cli` every second, so we only
+      -- There is a performance hit to calling `nowplaying-cli` every second, so we only
       -- attempt to retrieve updated media info if the elapsed elapsed_percentage has reset.
       if MediaInfo.elapsed_percentage and (elapsed_percentage or 0) < MediaInfo.elapsed_percentage then
         MediaInfo.track = nowplaying_cli.get_title()
@@ -147,6 +160,13 @@ function M.print_status()
 end
 
 function M.print_elapsed_percentage()
+  local status_line = MediaInfo.get_status_line()
+
+  if not status_line or status_line == media_status.STATUS_NO_MEDIA then
+    print("󰏰 unavailable")
+    return
+  end
+
   MediaInfo.elapsed_time = nowplaying_cli.get_elapsed_time()
   MediaInfo.duration = nowplaying_cli.get_duration()
 
@@ -155,10 +175,8 @@ function M.print_elapsed_percentage()
     return
   end
 
-  -- Do not cache this value as `MediaInfo.elapsed_percentage` is used to determine if state
-  -- should be refreshed.
-  local elapsed_percentage = math.floor((MediaInfo.elapsed_time / MediaInfo.duration) * 100)
-  print(elapsed_percentage .. "󰏰")
+  MediaInfo.elapsed_percentage = math.floor((MediaInfo.elapsed_time / MediaInfo.duration) * 100)
+  print(MediaInfo.elapsed_percentage .. "󰏰")
 end
 
 function M.play()
