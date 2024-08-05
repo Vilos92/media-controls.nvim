@@ -6,6 +6,8 @@
 
 Provides controls and a status listener for media players on MacOS.
 
+<img src="preview.gif" width="800em"/> <br>
+
 ## Requirements
 
 This plugin currently only supports macOS.
