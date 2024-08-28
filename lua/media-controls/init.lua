@@ -168,6 +168,10 @@ function M.print_elapsed_percentage()
   print(MediaInfo.elapsed_percentage .. "󰏰")
 end
 
+function M.print_is_playing()
+  print(MediaInfo.is_playing)
+end
+
 function M.play()
   nowplaying_cli.play()
 end
