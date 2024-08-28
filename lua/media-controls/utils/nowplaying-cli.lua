@@ -50,6 +50,16 @@ function M.get_duration()
   return tonumber(duration)
 end
 
+function M.get_is_playing()
+  if not check_is_nowplaying_cli_installed() then
+    return media_status.STATUS_NOT_INSTALLED
+  end
+
+  local playbackRate = vim.fn.system("nowplaying-cli get playbackRate")
+
+  return vim.trim(playbackRate) == "1"
+end
+
 -- ACTIONS
 
 function M.play()

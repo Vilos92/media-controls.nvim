@@ -9,6 +9,7 @@ local MediaInfo = {
   artist = nil,
   elapsed_time = nil,
   duration = nil,
+  is_playing = false,
   -- We store the previous `elapsed_percentage` to determine if a track has skipped or reset.
   -- This allows us to determine if it makes sense to refresh the track and artist information.
   elapsed_percentage = nil,
@@ -78,6 +79,13 @@ function M.poll_elapsed_percentage()
         MediaInfo.elapsed_time = nil
         MediaInfo.duration = nil
         MediaInfo.elapsed_percentage = nil
+        return
+      end
+
+      -- We return early as there is a bug with `nowplaying-cli` where the elapsed time
+      -- continues to increment even after the track has finished playing.
+      local is_playing = nowplaying_cli.get_is_playing()
+      if not is_playing then
         return
       end
 
