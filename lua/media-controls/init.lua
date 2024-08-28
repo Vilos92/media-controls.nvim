@@ -7,6 +7,7 @@ local nowplaying_cli = require("media-controls.utils.nowplaying-cli")
 local MediaInfo = {
   track = nil,
   artist = nil,
+  is_playing = false,
   elapsed_time = nil,
   duration = nil,
   -- We store the previous `elapsed_percentage` to determine if a track has skipped or reset.
@@ -81,6 +82,13 @@ function M.poll_elapsed_percentage()
         return
       end
 
+      -- We return early as there is a bug with `nowplaying-cli` where the elapsed time
+      -- continues to increment even after the track has finished playing.
+      MediaInfo.is_playing = nowplaying_cli.get_is_playing()
+      if not MediaInfo.is_playing then
+        return
+      end
+
       MediaInfo.elapsed_time = nowplaying_cli.get_elapsed_time()
       MediaInfo.duration = nowplaying_cli.get_duration()
 
@@ -116,7 +124,7 @@ function M.get_status()
   return MediaInfo.get_status()
 end
 
--- Retrieve cached status line + elapsed elapsed_percentage.
+-- Retrieve cached status line + is playing + elapsed elapsed_percentage.
 function M.get_playback()
   local status_line = MediaInfo.get_status()
   local elapsed_percentage = MediaInfo.elapsed_percentage
@@ -125,7 +133,9 @@ function M.get_playback()
     return status_line
   end
 
-  return status_line .. "  " .. elapsed_percentage .. "󰏰"
+  local playing_indicator = MediaInfo.is_playing and "" or ""
+
+  return status_line .. "  " .. playing_indicator .. "  " .. elapsed_percentage .. "󰏰"
 end
 
 function M.print_status()
@@ -156,6 +166,10 @@ function M.print_elapsed_percentage()
 
   MediaInfo.elapsed_percentage = math.floor((MediaInfo.elapsed_time / MediaInfo.duration) * 100)
   print(MediaInfo.elapsed_percentage .. "󰏰")
+end
+
+function M.print_is_playing()
+  print(MediaInfo.is_playing)
 end
 
 function M.play()

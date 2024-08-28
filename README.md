@@ -156,9 +156,6 @@ end)()
 
 ## Known Issues
 
-- `nowplaying-cli` continues iterating the `elapsedTime` even when the track is paused. This means that the elapsed time will continue to increase even when the track is paused.
-  - The `media-controls.nvim` plugin attempts to work around this limitation, but it still affects the accuracy of the current playback.
-  - If the `nowplaying-cli` issue is resolved, the `media-controls.nvim` plugin will be updated to reflect the changes.
 - The plugin currently only supports macOS.
   - This project could be extended to support `playerctl` or other alternatives for cross-platform support.
 
