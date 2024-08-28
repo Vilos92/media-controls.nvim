@@ -135,7 +135,7 @@ function M.get_playback()
 
   local playing_indicator = MediaInfo.is_playing and "" or ""
 
-  return status_line .. "  " .. playing_indicator .. "  " .. elapsed_percentage .. "󰏰"
+  return status_line .. "  " .. playing_indicator .. "  " .. elapsed_percentage .. "󰏰"
 end
 
 function M.print_status()
