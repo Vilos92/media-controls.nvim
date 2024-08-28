@@ -40,6 +40,8 @@ Additionally, a patched font is required. This has been tested with [Nerd Fonts]
 - `:MediaControlPlayback` - Get the current playback of the media player.
   - Returns the track, artist, and elapsed percentage of the current track.
 - `:MediaControlElapsedPct` - Get the elapsed percentage of the current track.
+- `:MediaControlIsPlaying` - Check if the media player is currently playing.
+  - Returns `1` if playing, `0` if paused.
 
 ### Controls
 

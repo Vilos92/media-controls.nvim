@@ -169,7 +169,8 @@ function M.print_elapsed_percentage()
 end
 
 function M.print_is_playing()
-  print(MediaInfo.is_playing)
+  local is_playing = nowplaying_cli.get_is_playing() and 1 or 0
+  print(is_playing)
 end
 
 function M.play()
