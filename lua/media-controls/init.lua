@@ -59,8 +59,10 @@ function M.poll_status()
     1000,
     10000,
     vim.schedule_wrap(function()
-      MediaInfo.track = nowplaying_cli.get_title()
-      MediaInfo.artist = nowplaying_cli.get_artist()
+      nowplaying_cli.get_artist_and_title_callback(function(artist, title)
+        MediaInfo.artist = artist
+        MediaInfo.track = title
+      end)
     end)
   )
 end
@@ -82,34 +84,41 @@ function M.poll_elapsed_percentage()
         return
       end
 
-      -- We return early as there is a bug with `nowplaying-cli` where the elapsed time
-      -- continues to increment even after the track has finished playing.
-      MediaInfo.is_playing = nowplaying_cli.get_is_playing()
-      if not MediaInfo.is_playing then
-        return
-      end
+      nowplaying_cli.get_playback_callback(function(is_playing, elapsed_time, duration)
+        -- We return early as there is a bug with `nowplaying-cli` where the elapsed time
+        -- continues to increment even after the track has finished playing.
+        -- MediaInfo.is_playing = nowplaying_cli.get_is_playing()
+        MediaInfo.is_playing = is_playing
+        if not MediaInfo.is_playing then
+          return
+        end
 
-      MediaInfo.elapsed_time = nowplaying_cli.get_elapsed_time()
-      MediaInfo.duration = nowplaying_cli.get_duration()
+        -- MediaInfo.elapsed_time = nowplaying_cli.get_elapsed_time()
+        -- MediaInfo.duration = nowplaying_cli.get_duration()
+        MediaInfo.elapsed_time = elapsed_time
+        MediaInfo.duration = duration
 
-      if MediaInfo.elapsed_time == nil or MediaInfo.duration == nil then
-        return
-      end
+        if MediaInfo.elapsed_time == nil or MediaInfo.duration == nil then
+          return
+        end
 
-      local elapsed_percentage = math.floor((MediaInfo.elapsed_time / MediaInfo.duration) * 100)
-      if elapsed_percentage > 100 then
-        MediaInfo.elapsed_percentage = nil
-        return
-      end
+        local elapsed_percentage = math.floor((MediaInfo.elapsed_time / MediaInfo.duration) * 100)
+        if elapsed_percentage > 100 then
+          MediaInfo.elapsed_percentage = nil
+          return
+        end
 
-      -- There is a performance hit to calling `nowplaying-cli` every second, so we only
-      -- attempt to retrieve updated media info if the elapsed elapsed_percentage has reset.
-      if MediaInfo.elapsed_percentage and (elapsed_percentage or 0) < MediaInfo.elapsed_percentage then
-        MediaInfo.track = nowplaying_cli.get_title()
-        MediaInfo.artist = nowplaying_cli.get_artist()
-      end
+        -- There is a performance hit to calling `nowplaying-cli` every second, so we only
+        -- attempt to retrieve updated media info if the elapsed elapsed_percentage has reset.
+        if MediaInfo.elapsed_percentage and (elapsed_percentage or 0) < MediaInfo.elapsed_percentage then
+          nowplaying_cli.get_artist_and_title_callback(function(artist, title)
+            MediaInfo.artist = artist
+            MediaInfo.track = title
+          end)
+        end
 
-      MediaInfo.elapsed_percentage = elapsed_percentage
+        MediaInfo.elapsed_percentage = elapsed_percentage
+      end)
     end)
   )
 end
