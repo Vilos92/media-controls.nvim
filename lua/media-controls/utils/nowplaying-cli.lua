@@ -93,7 +93,11 @@ end
 -- current media and fire a callback with the results.
 function M.get_playback_callback(callback)
   if not check_is_nowplaying_cli_installed() then
-    return callback(media_status.STATUS_NOT_INSTALLED, media_status.STATUS_NOT_INSTALLED, media_status.STATUS_NOT_INSTALLED)
+    return callback(
+      media_status.STATUS_NOT_INSTALLED,
+      media_status.STATUS_NOT_INSTALLED,
+      media_status.STATUS_NOT_INSTALLED
+    )
   end
 
   Job:new({
