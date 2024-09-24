@@ -27,7 +27,10 @@ Additionally, a patched font is required. This has been tested with [Nerd Fonts]
     <summary>With <a href="https://github.com/folke/lazy.nvim">folke/lazy.nvim</a></summary>
 
     ```lua
-    { 'Vilos92/media-controls.nvim' }
+    {
+        "Vilos92/media-controls.nvim",
+        dependencies = { "nvim-lua/plenary.nvim" },
+    }
     ```
 </details>
 
