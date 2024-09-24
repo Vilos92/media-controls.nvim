@@ -59,7 +59,7 @@ function M.poll_status()
     1000,
     10000,
     vim.schedule_wrap(function()
-      nowplaying_cli.get_artist_title_callback(function(artist, title)
+      nowplaying_cli.get_artist_and_title_callback(function(artist, title)
         MediaInfo.artist = artist
         MediaInfo.track = title
       end)
@@ -84,7 +84,7 @@ function M.poll_elapsed_percentage()
         return
       end
 
-      nowplaying_cli.get_is_playing_elapsed_time_duration_callback(function(is_playing, elapsed_time, duration)
+      nowplaying_cli.get_playback_callback(function(is_playing, elapsed_time, duration)
         -- We return early as there is a bug with `nowplaying-cli` where the elapsed time
         -- continues to increment even after the track has finished playing.
         -- MediaInfo.is_playing = nowplaying_cli.get_is_playing()
@@ -111,7 +111,7 @@ function M.poll_elapsed_percentage()
         -- There is a performance hit to calling `nowplaying-cli` every second, so we only
         -- attempt to retrieve updated media info if the elapsed elapsed_percentage has reset.
         if MediaInfo.elapsed_percentage and (elapsed_percentage or 0) < MediaInfo.elapsed_percentage then
-          nowplaying_cli.get_artist_title_callback(function(artist, title)
+          nowplaying_cli.get_artist_and_title_callback(function(artist, title)
             MediaInfo.artist = artist
             MediaInfo.track = title
           end)

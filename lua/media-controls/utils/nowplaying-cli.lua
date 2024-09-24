@@ -32,28 +32,6 @@ function M.get_title()
   return vim.trim(title)
 end
 
-function M.get_artist_title_callback(callback)
-  if not check_is_nowplaying_cli_installed() then
-    return callback(media_status.STATUS_NOT_INSTALLED, media_status.STATUS_NOT_INSTALLED)
-  end
-
-  Job:new({
-    command = "nowplaying-cli",
-    args = { "get", "artist" },
-    on_exit = function(artist_response)
-      local artist = vim.trim(artist_response:result()[1])
-      Job:new({
-        command = "nowplaying-cli",
-        args = { "get", "title" },
-        on_exit = function(title_response)
-          local title = vim.trim(title_response:result()[1])
-          callback(artist, title)
-        end,
-      }):start()
-    end,
-  }):start()
-end
-
 function M.get_elapsed_time()
   if not check_is_nowplaying_cli_installed() then
     return media_status.STATUS_NOT_INSTALLED
@@ -84,7 +62,36 @@ function M.get_is_playing()
   return vim.trim(playbackRate) == "1"
 end
 
-function M.get_is_playing_elapsed_time_duration_callback(callback)
+-- CALLBACK QUERIES
+-- Callbacks are used to avoid blocking the main thread while waiting for the response from the CLI.
+-- They are mainly used when polling the media status in the background.
+
+-- Async function to query the `artist` and `title` of the current media and fire a callback with the results.
+function M.get_artist_and_title_callback(callback)
+  if not check_is_nowplaying_cli_installed() then
+    return callback(media_status.STATUS_NOT_INSTALLED, media_status.STATUS_NOT_INSTALLED)
+  end
+
+  Job:new({
+    command = "nowplaying-cli",
+    args = { "get", "artist" },
+    on_exit = function(artist_response)
+      local artist = vim.trim(artist_response:result()[1])
+      Job:new({
+        command = "nowplaying-cli",
+        args = { "get", "title" },
+        on_exit = function(title_response)
+          local title = vim.trim(title_response:result()[1])
+          callback(artist, title)
+        end,
+      }):start()
+    end,
+  }):start()
+end
+
+-- Async function to query the `is_playing`, `elapsed_time` and `duration` of the
+-- current media and fire a callback with the results.
+function M.get_playback_callback(callback)
   if not check_is_nowplaying_cli_installed() then
     return callback(media_status.STATUS_NOT_INSTALLED, media_status.STATUS_NOT_INSTALLED, media_status.STATUS_NOT_INSTALLED)
   end
@@ -92,8 +99,8 @@ function M.get_is_playing_elapsed_time_duration_callback(callback)
   Job:new({
     command = "nowplaying-cli",
     args = { "get", "playbackRate" },
-    on_exit = function(j)
-      local isPlaying = vim.trim(j:result()[1]) == "1"
+    on_exit = function(playback_rate_result)
+      local isPlaying = vim.trim(playback_rate_result:result()[1]) == "1"
       Job:new({
         command = "nowplaying-cli",
         args = { "get", "elapsedTime" },
