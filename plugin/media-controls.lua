@@ -6,6 +6,12 @@ if _G.loaded_music_controls then
   return
 end
 
+vim.api.nvim_create_user_command("MediaControlArtist", function()
+  require("media-controls").print_artist()
+end, {})
+vim.api.nvim_create_user_command("MediaControlTrack", function()
+  require("media-controls").print_track()
+end, {})
 vim.api.nvim_create_user_command("MediaControlStatus", function()
   require("media-controls").print_status()
 end, {})

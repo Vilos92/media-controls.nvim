@@ -39,6 +39,8 @@ Additionally, a patched font is required. This has been tested with [Nerd Fonts]
 
 ### Queries
 
+- `:MediaControlArtist` - Get the current artist of the media player.
+- `:MediaControlTrack` - Get the current track of the media player.
 - `:MediaControlStatus` - Get the current status of the media player.
   - Returns the track and artist.
 - `:MediaControlPlayback` - Get the current playback of the media player.

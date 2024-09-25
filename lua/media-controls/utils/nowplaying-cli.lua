@@ -23,13 +23,14 @@ function M.get_artist()
   return vim.trim(artist)
 end
 
-function M.get_title()
+function M.get_track()
   if not check_is_nowplaying_cli_installed() then
     return media_status.STATUS_NOT_INSTALLED
   end
 
-  local title = vim.fn.system("nowplaying-cli get title")
-  return vim.trim(title)
+  -- The `title` parameter returns the track name.
+  local track = vim.fn.system("nowplaying-cli get title")
+  return vim.trim(track)
 end
 
 function M.get_elapsed_time()

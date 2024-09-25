@@ -144,6 +144,16 @@ function M.get_playback()
   return status_line .. "  " .. playing_indicator .. "  " .. elapsed_percentage .. "󰏰"
 end
 
+function M.print_artist()
+  local artist = nowplaying_cli.get_artist()
+  print(artist)
+end
+
+function M.print_track()
+  local track = nowplaying_cli.get_track()
+  print(track)
+end
+
 function M.print_status()
   local status_line = MediaInfo.get_status()
   print(status_line)
