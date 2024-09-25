@@ -104,7 +104,7 @@ function M.get_playback_callback(callback)
     command = "nowplaying-cli",
     args = { "get", "playbackRate" },
     on_exit = function(playback_rate_result)
-      local isPlaying = vim.trim(playback_rate_result:result()[1]) == "1"
+      local is_playing = vim.trim(playback_rate_result:result()[1]) == "1"
       Job:new({
         command = "nowplaying-cli",
         args = { "get", "elapsedTime" },
@@ -115,7 +115,7 @@ function M.get_playback_callback(callback)
             args = { "get", "duration" },
             on_exit = function(duration_result)
               local duration = tonumber(vim.trim(duration_result:result()[1]))
-              callback(isPlaying, elapsedTime, duration)
+              callback(is_playing, elapsedTime, duration)
             end,
           }):start()
         end,

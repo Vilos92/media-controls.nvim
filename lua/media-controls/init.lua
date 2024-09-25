@@ -87,14 +87,11 @@ function M.poll_elapsed_percentage()
       nowplaying_cli.get_playback_callback(function(is_playing, elapsed_time, duration)
         -- We return early as there is a bug with `nowplaying-cli` where the elapsed time
         -- continues to increment even after the track has finished playing.
-        -- MediaInfo.is_playing = nowplaying_cli.get_is_playing()
         MediaInfo.is_playing = is_playing
         if not MediaInfo.is_playing then
           return
         end
 
-        -- MediaInfo.elapsed_time = nowplaying_cli.get_elapsed_time()
-        -- MediaInfo.duration = nowplaying_cli.get_duration()
         MediaInfo.elapsed_time = elapsed_time
         MediaInfo.duration = duration
 
